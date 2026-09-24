@@ -103,37 +103,18 @@ def render_svg_gauge(risk_pct):
         badge_border = "rgba(244, 63, 94, 0.45)"
         badge_color = "#FB7185"
 
-    svg_code = f"""
-    <div style="text-align: center; padding: 12px 0;">
-        <svg width="260" height="150" viewBox="0 0 220 125" style="overflow: visible; filter: drop-shadow(0 0 12px {glow_color});">
-            <defs>
-                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#10B981" />
-                    <stop offset="50%" stop-color="#F59E0B" />
-                    <stop offset="100%" stop-color="#F43F5E" />
-                </linearGradient>
-            </defs>
-            <!-- Background Arc -->
-            <path d="M 25 110 A 85 85 0 0 1 195 110" fill="none" stroke="#132232" stroke-width="18" stroke-linecap="round" />
-            <!-- Active Risk Arc -->
-            <path d="M 25 110 A 85 85 0 0 1 195 110" fill="none" stroke="{primary_color}" stroke-width="18" stroke-linecap="round"
-                  stroke-dasharray="267" stroke-dashoffset="{267 - (risk_pct / 100.0) * 267}"
-                  style="transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);" />
-            <!-- Center Score Display -->
-            <text x="110" y="88" text-anchor="middle" fill="#FFFFFF" font-family="'Outfit', sans-serif" font-size="32" font-weight="800">
-                {risk_pct:.1f}%
-            </text>
-            <text x="110" y="105" text-anchor="middle" fill="rgba(226,241,253,0.55)" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="700" letter-spacing="0.08em">
-                ESTIMATED PROBABILITY
-            </text>
-        </svg>
-        <div style="margin-top: 10px;">
-            <span style="background: {badge_bg}; border: 1px solid {badge_border}; color: {badge_color}; padding: 7px 18px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; box-shadow: 0 0 16px {glow_color};">
-                {badge_text}
-            </span>
-        </div>
-    </div>
-    """
+    svg_code = (
+        f'<div style="text-align: center; padding: 12px 0;">'
+        f'<svg viewBox="0 0 220 125" style="width: 100%; max-width: 240px; height: auto; display: inline-block; overflow: visible; filter: drop-shadow(0 0 12px {glow_color});">'
+        f'<path d="M 25 110 A 85 85 0 0 1 195 110" fill="none" stroke="#132232" stroke-width="18" stroke-linecap="round" />'
+        f'<path d="M 25 110 A 85 85 0 0 1 195 110" fill="none" stroke="{primary_color}" stroke-width="18" stroke-linecap="round" stroke-dasharray="267" stroke-dashoffset="{dashoffset}" style="transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);" />'
+        f'<text x="110" y="88" text-anchor="middle" fill="#FFFFFF" font-family="Outfit, sans-serif" font-size="32" font-weight="800">{risk_pct:.1f}%</text>'
+        f'<text x="110" y="105" text-anchor="middle" fill="rgba(226,241,253,0.55)" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" letter-spacing="0.08em">ESTIMATED PROBABILITY</text>'
+        f'</svg>'
+        f'<div style="margin-top: 10px;">'
+        f'<span style="background: {badge_bg}; border: 1px solid {badge_border}; color: {badge_color}; padding: 7px 18px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; box-shadow: 0 0 16px {glow_color};">{badge_text}</span>'
+        f'</div></div>'
+    )
     return svg_code
 
 def apply_chart_theme(fig, ax):
@@ -455,21 +436,21 @@ elif page == "🔬  Patient Risk Assessment":
         # Real-time BMI Calculation & Interactive HUD Card
         bmi = weight / ((height / 100) ** 2)
         bmi_cat, bmi_class, bmi_hex, bmi_pct = get_bmi_classification(bmi)
-        st.markdown(f"""
-        <div style="margin-top: 12px; padding: 12px 16px; background: rgba(14,25,38,0.9); border-radius: 12px; border: 1px solid rgba(56,189,248,0.2); box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">CALCULATED BMI</span>
-                <span class="vitals-badge {bmi_class}">{bmi_cat}</span>
-            </div>
-            <div style="font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 800; color: {bmi_hex}; margin-top: 6px;">
-                {bmi:.1f} <span style="font-size: 13px; font-weight: 500; color: var(--sky-muted);">kg/m²</span>
-            </div>
-            <!-- Interactive Visual BMI Bar -->
-            <div style="margin-top: 8px; background: rgba(255,255,255,0.08); height: 6px; border-radius: 3px; overflow: hidden; position: relative;">
-                <div style="background: {bmi_hex}; width: {bmi_pct}%; height: 100%; border-radius: 3px; transition: width 0.4s ease;"></div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f'<div style="margin-top: 12px; padding: 12px 16px; background: rgba(14,25,38,0.9); border-radius: 12px; border: 1px solid rgba(56,189,248,0.2); box-shadow: 0 4px 16px rgba(0,0,0,0.3);">'
+            f'<div style="display: flex; justify-content: space-between; align-items: center;">'
+            f'<span style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">CALCULATED BMI</span>'
+            f'<span class="vitals-badge {bmi_class}">{bmi_cat}</span>'
+            f'</div>'
+            f'<div style="font-family: DM Mono, monospace; font-size: 24px; font-weight: 800; color: {bmi_hex}; margin-top: 6px;">'
+            f'{bmi:.1f} <span style="font-size: 13px; font-weight: 500; color: var(--sky-muted);">kg/m²</span>'
+            f'</div>'
+            f'<div style="margin-top: 8px; background: rgba(255,255,255,0.08); height: 6px; border-radius: 3px; overflow: hidden; position: relative;">'
+            f'<div style="background: {bmi_hex}; width: {bmi_pct}%; height: 100%; border-radius: 3px; transition: width 0.4s ease;"></div>'
+            f'</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
 
     with f_col2:
         st.markdown("<div style='font-size: 13.5px; font-weight: 700; color: #38BDF8; margin-bottom: 12px;'>02. Hemodynamics &amp; Vitals</div>", unsafe_allow_html=True)
@@ -480,23 +461,22 @@ elif page == "🔬  Patient Risk Assessment":
         map_val = (2 * ap_lo + ap_hi) / 3.0
         bp_label, bp_class, bp_hex, bp_note = get_bp_classification(ap_hi, ap_lo)
         
-        st.markdown(f"""
-        <div style="margin-top: 12px; padding: 12px 16px; background: rgba(14,25,38,0.9); border-radius: 12px; border: 1px solid rgba(56,189,248,0.2); box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">ACC/AHA BP STAGE</span>
-                <span class="vitals-badge {bp_class}">{bp_label}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px;">
-                <div style="font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 800; color: {bp_hex};">
-                    {ap_hi}/{ap_lo} <span style="font-size: 12px; font-weight: 500; color: var(--sky-muted);">mmHg</span>
-                </div>
-                <div style="font-size: 11.5px; color: var(--sky-muted); font-family: 'DM Mono', monospace;">
-                    MAP: {map_val:.1f}
-                </div>
-            </div>
-            <div style="font-size: 11.5px; color: rgba(226,241,253,0.55); margin-top: 6px; line-height: 1.4;">{bp_note}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f'<div style="margin-top: 12px; padding: 12px 16px; background: rgba(14,25,38,0.9); border-radius: 12px; border: 1px solid rgba(56,189,248,0.2); box-shadow: 0 4px 16px rgba(0,0,0,0.3);">'
+            f'<div style="display: flex; justify-content: space-between; align-items: center;">'
+            f'<span style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">ACC/AHA BP STAGE</span>'
+            f'<span class="vitals-badge {bp_class}">{bp_label}</span>'
+            f'</div>'
+            f'<div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px;">'
+            f'<div style="font-family: DM Mono, monospace; font-size: 24px; font-weight: 800; color: {bp_hex};">'
+            f'{ap_hi}/{ap_lo} <span style="font-size: 12px; font-weight: 500; color: var(--sky-muted);">mmHg</span>'
+            f'</div>'
+            f'<div style="font-size: 11.5px; color: var(--sky-muted); font-family: DM Mono, monospace;">MAP: {map_val:.1f}</div>'
+            f'</div>'
+            f'<div style="font-size: 11.5px; color: rgba(226,241,253,0.55); margin-top: 6px; line-height: 1.4;">{bp_note}</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
 
     with f_col3:
         st.markdown("<div style='font-size: 13.5px; font-weight: 700; color: #38BDF8; margin-bottom: 12px;'>03. Metabolic &amp; Lifestyle Markers</div>", unsafe_allow_html=True)
@@ -570,51 +550,54 @@ elif page == "🔬  Patient Risk Assessment":
                 with res_col1:
                     gauge_html = render_svg_gauge(risk_pct)
                     if pred_class == 1:
-                        st.markdown(f"""
-                        <div class="result-banner-high">
-                            {gauge_html}
-                            <div class="risk-header-high">Elevated Disease Likelihood</div>
-                            <p style="font-size: 14px; color: rgba(226,241,253,0.65); line-height: 1.6; margin-top: 10px;">
-                                The model stratifies this patient in the <b>higher-risk cardiovascular cohort</b> based on hemodynamic &amp; metabolic markers.
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        banner_html = (
+                            f'<div class="result-banner-high">'
+                            f'{gauge_html}'
+                            f'<div class="risk-header-high">Elevated Disease Likelihood</div>'
+                            f'<p style="font-size: 14px; color: rgba(226,241,253,0.65); line-height: 1.6; margin-top: 10px;">'
+                            f'The model stratifies this patient in the <b>higher-risk cardiovascular cohort</b> based on hemodynamic &amp; metabolic markers.'
+                            f'</p>'
+                            f'</div>'
+                        )
+                        st.markdown(banner_html, unsafe_allow_html=True)
                     else:
-                        st.markdown(f"""
-                        <div class="result-banner-low">
-                            {gauge_html}
-                            <div class="risk-header-low">Optimal Low Risk Profile</div>
-                            <p style="font-size: 14px; color: rgba(226,241,253,0.65); line-height: 1.6; margin-top: 10px;">
-                                The model stratifies this patient in the <b>lower-risk baseline cohort</b> with favorable clinical indicators.
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        banner_html = (
+                            f'<div class="result-banner-low">'
+                            f'{gauge_html}'
+                            f'<div class="risk-header-low">Optimal Low Risk Profile</div>'
+                            f'<p style="font-size: 14px; color: rgba(226,241,253,0.65); line-height: 1.6; margin-top: 10px;">'
+                            f'The model stratifies this patient in the <b>lower-risk baseline cohort</b> with favorable clinical indicators.'
+                            f'</p>'
+                            f'</div>'
+                        )
+                        st.markdown(banner_html, unsafe_allow_html=True)
 
                 with res_col2:
-                    st.markdown("""
-                    <div class="clinical-card">
-                        <div class="card-title">
-                            <span style="color: #38BDF8;">📊</span> Probabilistic Breakdown &amp; Attribution
-                        </div>
-                    """, unsafe_allow_html=True)
+                    st.markdown(
+                        '<div class="clinical-card">'
+                        '<div class="card-title"><span style="color: #38BDF8;">📊</span> Probabilistic Breakdown &amp; Attribution</div>',
+                        unsafe_allow_html=True
+                    )
 
                     m1, m2 = st.columns(2)
                     with m1:
-                        st.markdown(f"""
-                        <div class="metric-box" style="border-color: rgba(244, 63, 94, 0.4);">
-                            <div class="metric-label" style="color: #FB7185;">DISEASE PROBABILITY</div>
-                            <div class="metric-val" style="color: #F43F5E;">{risk_pct:.1f}%</div>
-                            <div class="metric-sub">Logistic regression output</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.markdown(
+                            f'<div class="metric-box" style="border-color: rgba(244, 63, 94, 0.4);">'
+                            f'<div class="metric-label" style="color: #FB7185;">DISEASE PROBABILITY</div>'
+                            f'<div class="metric-val" style="color: #F43F5E;">{risk_pct:.1f}%</div>'
+                            f'<div class="metric-sub">Logistic regression output</div>'
+                            f'</div>',
+                            unsafe_allow_html=True
+                        )
                     with m2:
-                        st.markdown(f"""
-                        <div class="metric-box" style="border-color: rgba(16, 185, 129, 0.4);">
-                            <div class="metric-label" style="color: #34D399;">HEALTHY BASELINE</div>
-                            <div class="metric-val" style="color: #10B981;">{safe_pct:.1f}%</div>
-                            <div class="metric-sub">Absence likelihood</div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.markdown(
+                            f'<div class="metric-box" style="border-color: rgba(16, 185, 129, 0.4);">'
+                            f'<div class="metric-label" style="color: #34D399;">HEALTHY BASELINE</div>'
+                            f'<div class="metric-val" style="color: #10B981;">{safe_pct:.1f}%</div>'
+                            f'<div class="metric-sub">Absence likelihood</div>'
+                            f'</div>',
+                            unsafe_allow_html=True
+                        )
 
                     st.markdown("<div style='font-size: 11.5px; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.08em; margin: 22px 0 10px 0;'>Patient Contributing Risk Determinants</div>", unsafe_allow_html=True)
                     
@@ -631,91 +614,83 @@ elif page == "🔬  Patient Risk Assessment":
 
                     if risk_factors:
                         for name, val, desc, hex_c in risk_factors:
-                            st.markdown(f"""
-                            <div class="factor-row">
-                                <div>
-                                    <div class="factor-name">{name}</div>
-                                    <div style="font-size: 11.5px; color: rgba(226,241,253,0.5);">{desc}</div>
-                                </div>
-                                <div class="factor-val" style="color: {hex_c};">{val}</div>
-                            </div>
-                            """, unsafe_allow_html=True)
+                            st.markdown(
+                                f'<div class="factor-row">'
+                                f'<div><div class="factor-name">{name}</div>'
+                                f'<div style="font-size: 11.5px; color: rgba(226,241,253,0.5);">{desc}</div></div>'
+                                f'<div class="factor-val" style="color: {hex_c};">{val}</div>'
+                                f'</div>',
+                                unsafe_allow_html=True
+                            )
                     else:
-                        st.markdown("""
-                        <div style="padding: 14px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; color: #34D399; font-size: 13.5px; font-weight: 600; text-align: center;">
-                            ✅ Optimal Profile: No critical high-risk indicators identified.
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.markdown(
+                            '<div style="padding: 14px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; color: #34D399; font-size: 13.5px; font-weight: 600; text-align: center;">'
+                            '✅ Optimal Profile: No critical high-risk indicators identified.'
+                            '</div>',
+                            unsafe_allow_html=True
+                        )
 
                     st.markdown("</div>", unsafe_allow_html=True)
 
                 # Clinical Actionable Recommendations
-                st.markdown("""
-                <div class="clinical-card" style="margin-top: 10px;">
-                    <div class="card-title">
-                        <span style="color: #38BDF8;">💡</span> Actionable Clinical Decision Guidance
-                    </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    '<div class="clinical-card" style="margin-top: 10px;">'
+                    '<div class="card-title"><span style="color: #38BDF8;">💡</span> Actionable Clinical Decision Guidance</div>',
+                    unsafe_allow_html=True
+                )
+
+                bp_rec_text = 'Recommend DASH dietary framework, sodium restriction (< 2g/day), and scheduled BP monitoring.' if ap_hi >= 130 else 'Maintain current healthy hemodynamic control with standard annual screenings.'
+                lifestyle_rec_text = 'Prescribe minimum 150 minutes/week of moderate aerobic exercise and lipid management.' if active_val == 0 or chol_val > 1 else 'Continue current active physical lifestyle and balanced Mediterranean nutritional patterns.'
 
                 rec_1, rec_2 = st.columns(2)
                 with rec_1:
-                    st.markdown(f"""
-                    <div class="recommendation-card">
-                        <div class="recommendation-title">🩺 Hemodynamic &amp; Blood Pressure Management</div>
-                        <div class="recommendation-body">
-                            Patient presents with <b>{ap_hi}/{ap_lo} mmHg</b> ({bp_label}). 
-                            {'Recommend DASH dietary framework, sodium restriction (< 2g/day), and scheduled BP monitoring.' if ap_hi >= 130 else 'Maintain current healthy hemodynamic control with standard annual screenings.'}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    st.markdown(
+                        f'<div class="recommendation-card">'
+                        f'<div class="recommendation-title">🩺 Hemodynamic &amp; Blood Pressure Management</div>'
+                        f'<div class="recommendation-body">Patient presents with <b>{ap_hi}/{ap_lo} mmHg</b> ({bp_label}). {bp_rec_text}</div>'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
                 with rec_2:
-                    st.markdown(f"""
-                    <div class="recommendation-card" style="border-left-color: #818CF8;">
-                        <div class="recommendation-title" style="color: #A5B4FC;">🥗 Metabolic &amp; Lifestyle Prescription</div>
-                        <div class="recommendation-body">
-                            {'Prescribe minimum 150 minutes/week of moderate aerobic exercise and lipid management.' if active_val == 0 or chol_val > 1 else 'Continue current active physical lifestyle and balanced Mediterranean nutritional patterns.'}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    st.markdown(
+                        f'<div class="recommendation-card" style="border-left-color: #818CF8;">'
+                        f'<div class="recommendation-title" style="color: #A5B4FC;">🥗 Metabolic &amp; Lifestyle Prescription</div>'
+                        f'<div class="recommendation-body">{lifestyle_rec_text}</div>'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
 
                 st.markdown("</div>", unsafe_allow_html=True)
 
                 # Printable / Exportable Clinical Assessment Report
                 with st.expander("📋 View Structured Clinical Decision Report (Printable)"):
-                    st.markdown(f"""
-                    <div style="background: rgba(14,25,38,0.95); border: 1px solid rgba(56,189,248,0.3); border-radius: 16px; padding: 28px; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(56,189,248,0.2); padding-bottom: 16px;">
-                            <div>
-                                <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 20px; color: #FFFFFF; letter-spacing: -0.01em;">
-                                    CARDIOSENSE AI — CLINICAL ASSESSMENT SUMMARY
-                                </div>
-                                <div style="font-size: 12.5px; color: var(--sky-muted); margin-top: 2px;">
-                                    Automated Machine Learning Decision Support &amp; Stratification
-                                </div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 13px; color: {'#F43F5E' if pred_class==1 else '#10B981'}; font-weight: 800;">
-                                    STRATIFICATION: {'ELEVATED CARDIO RISK' if pred_class==1 else 'LOW BASELINE RISK'}
-                                </div>
-                                <div style="font-size: 11.5px; color: var(--sky-muted); font-family: 'DM Mono', monospace;">Model Pipeline: v2.4-LR</div>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0;">
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">AGE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{age} yrs</div></div>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">SEX</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{gender}</div></div>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">BLOOD PRESSURE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{ap_hi}/{ap_lo} mmHg</div></div>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">CALCULATED BMI</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{bmi:.1f} kg/m²</div></div>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">CHOLESTEROL</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{cholesterol}</div></div>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">GLUCOSE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{gluc}</div></div>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">SMOKER</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{smoke}</div></div>
-                            <div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">PHYSICALLY ACTIVE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{active}</div></div>
-                        </div>
-                        <div style="background: linear-gradient(90deg, rgba(56,189,248,0.15) 0%, rgba(37,99,235,0.15) 100%); border: 1px solid var(--cyan-border); border-radius: 10px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 700; font-size: 14px; color: #FFFFFF;">Computed Disease Risk Score</span>
-                            <span style="font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 800; color: #38BDF8;">{risk_pct:.2f}%</span>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    report_status = 'ELEVATED CARDIO RISK' if pred_class == 1 else 'LOW BASELINE RISK'
+                    report_color = '#F43F5E' if pred_class == 1 else '#10B981'
+                    st.markdown(
+                        f'<div style="background: rgba(14,25,38,0.95); border: 1px solid rgba(56,189,248,0.3); border-radius: 16px; padding: 24px; font-family: Plus Jakarta Sans, sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">'
+                        f'<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(56,189,248,0.2); padding-bottom: 14px; flex-wrap: wrap; gap: 10px;">'
+                        f'<div><div style="font-family: Outfit, sans-serif; font-weight: 800; font-size: 19px; color: #FFFFFF;">CARDIOSENSE AI — CLINICAL REPORT</div>'
+                        f'<div style="font-size: 12px; color: var(--sky-muted); margin-top: 2px;">Automated Machine Learning Decision Support &amp; Stratification</div></div>'
+                        f'<div style="text-align: right;"><div style="font-size: 13px; color: {report_color}; font-weight: 800;">STRATIFICATION: {report_status}</div>'
+                        f'<div style="font-size: 11px; color: var(--sky-muted); font-family: DM Mono, monospace;">Pipeline: v2.4-LR</div></div>'
+                        f'</div>'
+                        f'<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 18px 0;">'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">AGE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{age} yrs</div></div>'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">SEX</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{gender}</div></div>'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">BLOOD PRESSURE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{ap_hi}/{ap_lo} mmHg</div></div>'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">CALCULATED BMI</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{bmi:.1f} kg/m²</div></div>'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">CHOLESTEROL</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{cholesterol}</div></div>'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">GLUCOSE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{gluc}</div></div>'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">SMOKER</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{smoke}</div></div>'
+                        f'<div style="background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 8px;"><span style="color: var(--sky-muted); font-size: 11px; font-weight: 700;">PHYSICALLY ACTIVE</span> <div style="font-weight: 700; color: #FFFFFF; font-size: 15px;">{active}</div></div>'
+                        f'</div>'
+                        f'<div style="background: linear-gradient(90deg, rgba(56,189,248,0.15) 0%, rgba(37,99,235,0.15) 100%); border: 1px solid var(--cyan-border); border-radius: 10px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center;">'
+                        f'<span style="font-weight: 700; font-size: 14px; color: #FFFFFF;">Computed Disease Risk Score</span>'
+                        f'<span style="font-family: DM Mono, monospace; font-size: 24px; font-weight: 800; color: #38BDF8;">{risk_pct:.2f}%</span>'
+                        f'</div>'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
 
             except Exception as ex:
                 st.error("❌ Prediction evaluation error.")
@@ -790,19 +765,24 @@ elif page == "📊  Model Analytics":
             sim_df = sim_df[list(model.feature_names_in_)]
             sim_prob = model.predict_proba(sim_df)[0][1] * 100.0
             
-            sim_hex = "#10B981" if sim_prob < 35 else ("#F59E0B" if sim_prob < 65 else "#F43F5E")
+            if sim_prob < 35:
+                sim_hex = "#10B981"
+                sim_status = "Low Risk"
+            elif sim_prob < 65:
+                sim_hex = "#F59E0B"
+                sim_status = "Moderate Risk"
+            else:
+                sim_hex = "#F43F5E"
+                sim_status = "High Risk"
             
-            st.markdown(f"""
-            <div style="background: rgba(14,25,38,0.9); border: 1px solid rgba(56,189,248,0.25); border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-                <div style="font-size: 11px; color: #38BDF8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">SIMULATED RISK PROBABILITY</div>
-                <div style="font-family: 'DM Mono', monospace; font-size: 38px; font-weight: 800; color: {sim_hex}; margin: 6px 0;">
-                    {sim_prob:.1f}%
-                </div>
-                <div style="font-size: 12px; color: var(--sky-muted);">
-                    Status: <b style="color: {sim_hex};">{'Low Risk' if sim_prob<35 else ('Moderate Risk' if sim_prob<65 else 'High Risk')}</b>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(
+                f'<div style="background: rgba(14,25,38,0.9); border: 1px solid rgba(56,189,248,0.25); border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">'
+                f'<div style="font-size: 11px; color: #38BDF8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">SIMULATED RISK PROBABILITY</div>'
+                f'<div style="font-family: DM Mono, monospace; font-size: 38px; font-weight: 800; color: {sim_hex}; margin: 6px 0;">{sim_prob:.1f}%</div>'
+                f'<div style="font-size: 12px; color: var(--sky-muted);">Status: <b style="color: {sim_hex};">{sim_status}</b></div>'
+                f'</div>',
+                unsafe_allow_html=True
+            )
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -815,32 +795,27 @@ elif page == "📊  Model Analytics":
     diff = abs(train_acc - test_acc)
 
     with ov_c1:
-        st.markdown(f"""
-        <div class="clinical-card">
-            <div class="card-title">
-                <span style="color: #10B981;">⚖️</span> Generalization &amp; Overfitting Audit
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-                <div style="background: rgba(14,25,38,0.85); padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                    <div style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">TRAINING ACCURACY</div>
-                    <div style="font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 700; color: #818CF8; margin-top: 2px;">~{train_acc:.2f}%</div>
-                </div>
-                <div style="background: rgba(14,25,38,0.85); padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                    <div style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">TEST ACCURACY</div>
-                    <div style="font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 700; color: #38BDF8; margin-top: 2px;">{test_acc:.2f}%</div>
-                </div>
-                <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 14px 18px; border-radius: 12px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 20px;">🛡️</span>
-                        <div>
-                            <div style="font-weight: 700; color: #34D399; font-size: 14px;">Optimal Generalization Verified</div>
-                            <div style="font-size: 12px; color: #A7F3D0; margin-top: 2px;">Delta gap of <b>{diff:.2f}%</b> establishes no over-fitting.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="clinical-card">'
+            f'<div class="card-title"><span style="color: #10B981;">⚖️</span> Generalization &amp; Overfitting Audit</div>'
+            f'<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">'
+            f'<div style="background: rgba(14,25,38,0.85); padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">'
+            f'<div style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">TRAINING ACCURACY</div>'
+            f'<div style="font-family: \'DM Mono\', monospace; font-size: 26px; font-weight: 700; color: #818CF8; margin-top: 2px;">~{train_acc:.2f}%</div>'
+            f'</div>'
+            f'<div style="background: rgba(14,25,38,0.85); padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">'
+            f'<div style="font-size: 11px; color: var(--sky-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">TEST ACCURACY</div>'
+            f'<div style="font-family: \'DM Mono\', monospace; font-size: 26px; font-weight: 700; color: #38BDF8; margin-top: 2px;">{test_acc:.2f}%</div>'
+            f'</div>'
+            f'<div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 14px 18px; border-radius: 12px;">'
+            f'<div style="display: flex; align-items: center; gap: 10px;">'
+            f'<span style="font-size: 20px;">🛡️</span>'
+            f'<div><div style="font-weight: 700; color: #34D399; font-size: 14px;">Optimal Generalization Verified</div>'
+            f'<div style="font-size: 12px; color: #A7F3D0; margin-top: 2px;">Delta gap of <b>{diff:.2f}%</b> establishes no over-fitting.</div></div>'
+            f'</div></div>'
+            f'</div></div>',
+            unsafe_allow_html=True
+        )
 
     with ov_c2:
         fig, ax = plt.subplots(figsize=(5.5, 3.4), dpi=140)
@@ -858,7 +833,7 @@ elif page == "📊  Model Analytics":
                     color='white', fontweight='bold', fontsize=11)
 
         plt.tight_layout()
-        st.pyplot(fig)
+        st.pyplot(fig, use_container_width=True)
         plt.close(fig)
 
     # 5-Fold Cross Validation Breakdown
@@ -908,7 +883,7 @@ elif page == "📊  Model Analytics":
                      f"{val:.2f}%", ha='center', va='top', color='white', fontweight='bold', fontsize=9)
 
         plt.tight_layout()
-        st.pyplot(fig2)
+        st.pyplot(fig2, use_container_width=True)
         plt.close(fig2)
 
     # Feature Importance Coefficients
@@ -942,7 +917,7 @@ elif page == "📊  Model Analytics":
     ax3.legend(handles=[red_patch, blue_patch], facecolor='#0E1824', edgecolor='#1E3A5F', labelcolor='#E2F1FD')
 
     plt.tight_layout()
-    st.pyplot(fig3)
+    st.pyplot(fig3, use_container_width=True)
     plt.close(fig3)
 
 
@@ -967,7 +942,7 @@ elif page == "📁  Dataset Explorer":
             <div class="card-title">
                 <span style="color: #38BDF8;">📊</span> Cohort Metadata &amp; Class Balance
             </div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 14px;">
                 <div class="metric-box">
                     <div class="metric-label" style="color: #38BDF8;">TOTAL COHORT</div>
                     <div class="metric-val">{len(df_cardio):,}</div>

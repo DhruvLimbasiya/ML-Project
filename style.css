@@ -989,3 +989,223 @@ div.stButton > button:active {
   background: var(--cyan);
   box-shadow: 0 0 10px var(--cyan);
 }
+
+/* ════════════════════════════════════════════════════════════════
+   RESPONSIVE MEDIA QUERIES FOR PHONES & TABLETS
+   ════════════════════════════════════════════════════════════════ */
+
+/* Tablet & Mobile Screens (<= 992px) */
+@media screen and (max-width: 992px) {
+  .main .block-container {
+    padding-top: 1.2rem !important;
+    padding-left: 1.2rem !important;
+    padding-right: 1.2rem !important;
+    padding-bottom: 3.5rem !important;
+  }
+
+  .hero-card {
+    padding: 24px 20px !important;
+  }
+
+  .hero-title {
+    font-size: 28px !important;
+  }
+
+  .top-nav {
+    padding: 14px 18px !important;
+  }
+}
+
+/* Mobile Devices & Phones (<= 768px) */
+@media screen and (max-width: 768px) {
+  /* Container layout */
+  .main .block-container {
+    padding-top: 0.8rem !important;
+    padding-left: 0.8rem !important;
+    padding-right: 0.8rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  /* Top Nav Bar Mobile Reflow */
+  .top-nav {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+    padding: 16px !important;
+    border-radius: var(--r-lg) !important;
+  }
+
+  .brand-badge {
+    width: 100% !important;
+  }
+
+  .nav-badges {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+  }
+
+  .latency-pill, .status-pill {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+  }
+
+  /* Hero Card Mobile Reflow */
+  .hero-card {
+    padding: 20px 16px !important;
+    border-radius: var(--r-lg) !important;
+  }
+
+  .hero-title {
+    font-size: 23px !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero-desc {
+    font-size: 13.5px !important;
+    line-height: 1.6 !important;
+  }
+
+  .hero-badge-box {
+    width: 100% !important;
+    min-width: 100% !important;
+    padding: 16px 20px !important;
+    margin-top: 12px !important;
+  }
+
+  .hero-badge-box .metric-val {
+    font-size: 30px !important;
+  }
+
+  /* Headings & Clinical Cards */
+  .page-title {
+    font-size: 24px !important;
+  }
+
+  .page-description {
+    font-size: 13px !important;
+  }
+
+  .clinical-card {
+    padding: 18px 16px !important;
+    border-radius: var(--r-lg) !important;
+    margin-bottom: 14px !important;
+  }
+
+  .card-title {
+    font-size: 15.5px !important;
+    margin-bottom: 14px !important;
+  }
+
+  /* Metric Boxes */
+  .metric-box {
+    padding: 14px 16px !important;
+    border-radius: var(--r-md) !important;
+    margin-bottom: 8px !important;
+  }
+
+  .metric-val {
+    font-size: 22px !important;
+  }
+
+  .metric-label {
+    font-size: 10.5px !important;
+  }
+
+  .metric-sub {
+    font-size: 11.5px !important;
+  }
+
+  /* Workflow Steps */
+  .step-item {
+    padding: 8px 6px !important;
+    gap: 12px !important;
+  }
+
+  .step-num {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  /* Factor Cards & Rows */
+  .factor-card {
+    padding: 12px 14px !important;
+  }
+
+  .factor-row {
+    padding: 8px 6px !important;
+  }
+
+  .factor-name {
+    font-size: 12.5px !important;
+  }
+
+  .factor-val {
+    font-size: 12.5px !important;
+  }
+
+  /* Results Card & Gauge */
+  .result-banner-high, .result-banner-low {
+    padding: 20px 14px !important;
+    border-radius: var(--r-lg) !important;
+    margin-bottom: 14px !important;
+  }
+
+  .risk-header-high, .risk-header-low {
+    font-size: 20px !important;
+  }
+
+  /* Recommendation Cards */
+  .recommendation-card {
+    padding: 14px 16px !important;
+    margin-top: 10px !important;
+  }
+
+  /* Buttons & Form Elements (Finger-friendly touch targets) */
+  div.stButton > button {
+    height: 48px !important;
+    font-size: 14px !important;
+  }
+
+  /* Force Streamlit Columns to Stack Neatly on Phone */
+  [data-testid="column"] {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    min-width: 100% !important;
+  }
+
+  /* Sidebar touch tweaks */
+  [data-testid="stSidebar"] div[role="radiogroup"] > label {
+    padding: 14px 16px !important;
+    min-height: 44px !important;
+  }
+}
+
+/* Extra Small Phones (<= 480px) */
+@media screen and (max-width: 480px) {
+  .hero-title {
+    font-size: 21px !important;
+  }
+
+  .brand-title {
+    font-size: 17px !important;
+  }
+
+  .brand-icon-wrapper {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 18px !important;
+  }
+
+  .nav-badges {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .latency-pill, .status-pill {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
