@@ -81,7 +81,7 @@ Ensure you have **Python 3.8+** installed on your system.
 
 ### 2. Clone Repository / Navigate to Folder
 ```bash
-cd "d:/submission/sem 5/ML Project"
+cd "your folder path"
 ```
 
 ### 3. Create & Activate Virtual Environment (Optional but Recommended)
