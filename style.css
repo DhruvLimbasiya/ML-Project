@@ -14,6 +14,8 @@
    ================================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
@@ -69,11 +71,57 @@
 }
 
 /* ── Base Typography & Global Reset ────────────────────────── */
-html, body, [class*="css"], [class*="st-"] {
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+html, body, .stApp, p, label {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
   color: var(--sky-dim);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Safeguard Streamlit System Icons & Collapse Arrow ──────── */
+[data-testid="stIconMaterial"],
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"],
+[data-testid="collapsedControl"] *,
+button[kind="header"],
+button[kind="header"] *,
+[class*="material-symbols"],
+[class*="MaterialSymbols"],
+[class*="material-icons"],
+[class*="MaterialIcons"],
+.material-symbols-rounded,
+.material-symbols-outlined {
+  font-family: 'Material Symbols Rounded', 'Material Symbols Outlined', 'Material Icons', sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr !important;
+  -webkit-font-feature-settings: 'liga' 1 !important;
+  font-feature-settings: 'liga' 1 !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Sidebar Collapse & Expand Button Polish */
+[data-testid="stSidebarCollapseButton"] button,
+[data-testid="collapsedControl"] button {
+  background: rgba(56, 189, 248, 0.08) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  border-radius: var(--r-sm) !important;
+  color: var(--cyan) !important;
+  transition: var(--transition-fast) !important;
+}
+
+[data-testid="stSidebarCollapseButton"] button:hover,
+[data-testid="collapsedControl"] button:hover {
+  background: var(--cyan-glow) !important;
+  border-color: var(--cyan) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.4) !important;
 }
 
 /* ── App Canvas & Animated Glow Background ─────────────────── */
