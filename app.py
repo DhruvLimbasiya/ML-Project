@@ -21,21 +21,23 @@ st.set_page_config(
 # PAGE ROUTING DEFINITION
 # ─────────────────────────────────────────────
 PAGE_MAP = {
-    "overview": "🏠  Overview",
-    "risk-assessment": "🔬  Patient Risk Assessment",
-    "analytics": "📊  Model Analytics",
-    "dataset": "📁  Dataset Explorer",
+    "overview": "🏠 Overview",
+    "risk-assessment": "🔬 Patient Risk Assessment",
+    "analytics": "📊 Model Analytics",
+    "dataset": "📁 Dataset Explorer",
 }
 PAGE_LABELS = list(PAGE_MAP.values())
 SLUG_MAP = {label: slug for slug, label in PAGE_MAP.items()}
 
 def inject_scroll_to_top(page_key: str):
-    """Ensure the viewport scrolls to the top whenever a new page is loaded or switched."""
+    """Ensure viewport scrolls to top and auto-closes mobile slide panel upon page switch."""
     components.html(
         f"""
         <script>
             (function() {{
                 const targetSlug = "{page_key}";
+                
+                // Scroll to Top Handler
                 const scrollToTop = () => {{
                     try {{
                         if (window.parent) {{
@@ -67,10 +69,63 @@ def inject_scroll_to_top(page_key: str):
                         window.scrollTo(0, 0);
                     }}
                 }};
+
+                // Mobile Sidebar Auto-Close on Navigation
+                const closeMobileSidebar = () => {{
+                    try {{
+                        if (!window.parent) return;
+                        const parentWin = window.parent;
+                        const doc = parentWin.document;
+                        if (!doc) return;
+                        
+                        if (parentWin.innerWidth <= 992) {{
+                            const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                            if (sidebar && sidebar.getAttribute('aria-expanded') !== 'false') {{
+                                const closeBtn = doc.querySelector('[data-testid="stSidebarCollapseButton"] button')
+                                              || doc.querySelector('button[aria-label="Close sidebar"]')
+                                              || doc.querySelector('button[aria-label="Collapse sidebar"]')
+                                              || doc.querySelector('[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]')
+                                              || doc.querySelector('[data-testid="stSidebar"] button[kind="header"]')
+                                              || doc.querySelector('[data-testid="stSidebar"] button');
+                                if (closeBtn) {{
+                                    closeBtn.click();
+                                }}
+                            }}
+                        }}
+                    }} catch (e) {{}}
+                }};
+
+                // Attach Click Listeners to Sidebar Navigation Items
+                const attachMobileNavListeners = () => {{
+                    try {{
+                        if (!window.parent) return;
+                        const doc = window.parent.document;
+                        if (!doc) return;
+                        
+                        const navLabels = doc.querySelectorAll('[data-testid="stSidebar"] div[role="radiogroup"] label');
+                        navLabels.forEach(label => {{
+                            if (!label._hasMobileCloseListener) {{
+                                label._hasMobileCloseListener = true;
+                                label.addEventListener('click', () => {{
+                                    if (window.parent && window.parent.innerWidth <= 992) {{
+                                        setTimeout(closeMobileSidebar, 80);
+                                    }}
+                                }});
+                            }}
+                        }});
+                    }} catch (e) {{}}
+                }};
+                
                 scrollToTop();
+                closeMobileSidebar();
+                attachMobileNavListeners();
+
                 requestAnimationFrame(scrollToTop);
                 setTimeout(scrollToTop, 25);
+                setTimeout(closeMobileSidebar, 30);
                 setTimeout(scrollToTop, 100);
+                setTimeout(closeMobileSidebar, 120);
+                setTimeout(attachMobileNavListeners, 150);
                 setTimeout(scrollToTop, 250);
             }})();
         </script>
@@ -321,7 +376,7 @@ st.markdown("""
 # ─────────────────────────────────────────────
 # PAGE 1 — OVERVIEW
 # ─────────────────────────────────────────────
-if page == "🏠  Overview":
+if page == "🏠 Overview":
 
     # Hero Banner with Glow & Interactive Cards
     st.markdown("""
@@ -456,7 +511,7 @@ if page == "🏠  Overview":
 # ─────────────────────────────────────────────
 # PAGE 2 — PATIENT RISK ASSESSMENT
 # ─────────────────────────────────────────────
-elif page == "🔬  Patient Risk Assessment":
+elif page == "🔬 Patient Risk Assessment":
     
     st.markdown("""
     <div class="page-header">
@@ -478,7 +533,7 @@ elif page == "🔬  Patient Risk Assessment":
     with f_col1:
         st.markdown("<div style='font-size: 13.5px; font-weight: 700; color: #38BDF8; margin-bottom: 12px;'>01. Demographics &amp; Biometrics</div>", unsafe_allow_html=True)
         age = st.number_input("Age (Years)", min_value=18, max_value=100, value=45, step=1)
-        gender = st.selectbox("Biological Sex", ["Female", "Male"], index=0)
+        gender = st.selectbox("Biological Gender", ["Female", "Male"], index=0)
         gender_val = 1 if gender == "Female" else 2
         height = st.number_input("Height (cm)", min_value=120, max_value=220, value=165, step=1)
         weight = st.number_input("Weight (kg)", min_value=35.0, max_value=200.0, value=68.0, step=0.5)
@@ -748,7 +803,7 @@ elif page == "🔬  Patient Risk Assessment":
 # ─────────────────────────────────────────────
 # PAGE 3 — MODEL ANALYTICS & INSIGHTS
 # ─────────────────────────────────────────────
-elif page == "📊  Model Analytics":
+elif page == "📊 Model Analytics":
     
     st.markdown("""
     <div class="page-header">
@@ -972,7 +1027,7 @@ elif page == "📊  Model Analytics":
 # ─────────────────────────────────────────────
 # PAGE 4 — DATASET EXPLORER
 # ─────────────────────────────────────────────
-elif page == "📁  Dataset Explorer":
+elif page == "📁 Dataset Explorer":
     
     st.markdown("""
     <div class="page-header">

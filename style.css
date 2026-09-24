@@ -190,54 +190,103 @@ button[kind="header"] *,
   line-height: 1.6 !important;
 }
 
-/* Sidebar Navigation Items */
+/* Hide Sidebar Radio Widget Title ("Navigation" text label) */
+[data-testid="stSidebar"] [data-testid="stRadio"] > label,
+[data-testid="stSidebar"] [data-testid="stRadio"] [data-testid="stWidgetLabel"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide Radio Bullet / Circle in Sidebar Navigation */
+[data-testid="stSidebar"] div[role="radiogroup"] input[type="radio"],
+[data-testid="stSidebar"] div[role="radiogroup"] [data-testid="stRadioBullet"],
+[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child:not([data-testid="stMarkdownContainer"]),
+[data-testid="stSidebar"] label[data-baseweb="radio"] > div:first-child:not([data-testid="stMarkdownContainer"]),
+[data-testid="stSidebar"] div[role="radiogroup"] label > span:first-child,
+[data-testid="stSidebar"] div[role="radiogroup"] div[aria-hidden="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+}
+
+[data-testid="stSidebar"] div[role="radiogroup"] [data-testid="stMarkdownContainer"] {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+[data-testid="stSidebar"] div[role="radiogroup"] [data-testid="stMarkdownContainer"] p {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Sidebar Navigation Items (Target ONLY items inside radiogroup) */
 [data-testid="stSidebar"] div[role="radiogroup"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 6px !important;
 }
 
-[data-testid="stSidebar"] div[role="radiogroup"] > label {
+[data-testid="stSidebar"] div[role="radiogroup"] label,
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-baseweb="radio"],
+[data-testid="stSidebar"] div[role="radiogroup"] > div > label {
   background: rgba(255, 255, 255, 0.02) !important;
   border-radius: var(--r-md) !important;
-  padding: 12px 16px !important;
+  padding: 10px 14px !important;
   margin-bottom: 2px !important;
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
   transition: var(--transition-fast) !important;
   cursor: pointer !important;
   position: relative !important;
   overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
 }
 
-[data-testid="stSidebar"] div[role="radiogroup"] > label:hover {
+[data-testid="stSidebar"] div[role="radiogroup"] label:hover,
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-baseweb="radio"]:hover,
+[data-testid="stSidebar"] div[role="radiogroup"] > div > label:hover {
   background: rgba(56, 189, 248, 0.08) !important;
   border-color: rgba(56, 189, 248, 0.3) !important;
   transform: translateX(4px) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 0 12px rgba(56, 189, 248, 0.08) !important;
 }
 
-[data-testid="stSidebar"] div[role="radiogroup"] > label:hover p {
+[data-testid="stSidebar"] div[role="radiogroup"] label:hover p,
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-baseweb="radio"]:hover p {
   color: var(--cyan-light) !important;
 }
 
-[data-testid="stSidebar"] div[role="radiogroup"] > label[data-checked="true"] {
+/* Selected / Active State across all DOM implementations */
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"],
+[data-testid="stSidebar"] div[role="radiogroup"] label[aria-checked="true"],
+[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked),
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-baseweb="radio"]:has(input:checked),
+[data-testid="stSidebar"] div[role="radiogroup"] > div > label:has(input:checked) {
   background: linear-gradient(90deg, rgba(56, 189, 248, 0.18) 0%, rgba(37, 99, 235, 0.12) 100%) !important;
   border-color: var(--cyan) !important;
   box-shadow: 0 4px 20px rgba(56, 189, 248, 0.22), inset 0 0 16px rgba(56, 189, 248, 0.15) !important;
 }
 
-[data-testid="stSidebar"] div[role="radiogroup"] > label[data-checked="true"]::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--cyan) 0%, var(--blue) 100%);
-  border-radius: 0 4px 4px 0;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] > label[data-checked="true"] p {
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] p,
+[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) p,
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-baseweb="radio"]:has(input:checked) p {
   color: #FFFFFF !important;
   font-weight: 700 !important;
   letter-spacing: 0.01em !important;
@@ -711,22 +760,40 @@ button[kind="header"] *,
 /* ════════════════════════════════════════════════════════════════
    STREAMLIT FORM CONTROLS & INPUTS (BORDERLESS)
    ════════════════════════════════════════════════════════════════ */
-.stSelectbox label, .stNumberInput label, .stSlider label, .stTextInput label,
-[data-testid="stWidgetLabel"] p {
+
+/* Complete Background Transparency for All Labels & Tooltips */
+label,
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] *,
+[data-testid="stWidgetLabel"] div,
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] span,
+.stSelectbox label,
+.stNumberInput label,
+.stSlider label,
+.stTextInput label,
+[data-testid="stTooltipIcon"],
+[data-testid="stTooltipIcon"] * {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
   font-size: 13px !important;
   font-weight: 600 !important;
   color: var(--sky-dim) !important;
-  margin-bottom: 6px !important;
 }
 
-/* Entire Input & Selectbox Elements — 100% Borderless */
+[data-testid="stWidgetLabel"] {
+  margin-bottom: 6px !important;
+  background: transparent !important;
+}
+
+/* Entire Input & Selectbox Elements — 100% Borderless with Proper Internal Padding */
 div[data-baseweb="input"],
 div[data-baseweb="base-input"],
 div[data-baseweb="select"],
 div[data-baseweb="select"] > div,
 [data-testid="stNumberInputContainer"],
-[data-testid="stNumberInput"] div,
-[data-testid="stTextInput"] div,
 .stSelectbox [data-baseweb="select"] > div {
   background: rgba(14, 25, 38, 0.9) !important;
   border: none !important;
@@ -737,6 +804,7 @@ div[data-baseweb="select"] > div,
   backdrop-filter: blur(10px) !important;
   transition: var(--transition-fast) !important;
   box-shadow: none !important;
+  padding-right: 6px !important;
 }
 
 div[data-baseweb="input"]:hover,
@@ -767,28 +835,68 @@ input[type="number"], input[type="text"], input {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  background: transparent !important;
   color: #FFFFFF !important;
   font-size: 14.5px !important;
   font-weight: 600 !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-[data-testid="stNumberInput"] button {
-  background: rgba(56, 189, 248, 0.08) !important;
+/* Number Input Stepper Buttons (Proper Spacing & Pill Separation) */
+[data-testid="stNumberInput"] button,
+[data-testid="stNumberInputStepDown"],
+[data-testid="stNumberInputStepUp"],
+div[data-baseweb="input"] button {
+  background: rgba(56, 189, 248, 0.12) !important;
   border: none !important;
   outline: none !important;
   color: var(--cyan-light) !important;
-  border-radius: var(--r-xs) !important;
+  border-radius: 6px !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
+  align-self: center !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   transition: var(--transition-fast) !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  cursor: pointer !important;
 }
 
-[data-testid="stNumberInput"] button:hover {
+[data-testid="stNumberInputStepDown"] {
+  margin-right: 5px !important;
+  margin-left: 4px !important;
+  margin-top: 6px !important;
+}
+
+[data-testid="stNumberInputStepUp"] {
+  margin-left: 5px !important;
+  margin-right: 4px !important;
+  margin-top: 6px !important;
+}
+
+[data-testid="stNumberInput"] button:hover,
+[data-testid="stNumberInputStepDown"]:hover,
+[data-testid="stNumberInputStepUp"]:hover,
+div[data-baseweb="input"] button:hover {
   background: var(--cyan) !important;
-  color: #000000 !important;
+  color: #080E14 !important;
   border: none !important;
   outline: none !important;
-  transform: scale(1.08) !important;
+  transform: translateY(-1px) scale(1.08) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.45) !important;
+}
+
+[data-testid="stNumberInput"] button:active,
+[data-testid="stNumberInputStepDown"]:active,
+[data-testid="stNumberInputStepUp"]:active,
+div[data-baseweb="input"] button:active {
+  transform: translateY(0) scale(0.96) !important;
 }
 
 /* Dropdown popover list */
