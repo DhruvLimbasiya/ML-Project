@@ -1,11 +1,11 @@
-# 🫀 CardioSense AI — Cardiovascular Risk Intelligence & ML Platform
+# 🫀 CardioCheck: Cardiovascular Disease Risk Prediction Using Machine Learning
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.25%2B-FF4B4B.svg)](https://streamlit.io/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.0%2B-F7931E.svg)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](#license)
 
-**CardioSense AI** is an interactive clinical decision-support web application and machine learning platform designed to stratify cardiovascular disease (CVD) risk using patient hemodynamic profiles, biological metrics, and lifestyle parameters. Trained on a cohort of **70,000 anonymized patient records**, the platform features a calibrated Scikit-Learn machine learning pipeline integrated into a custom Streamlit UI styled with modern clinical glassmorphism aesthetics.
+**CardioCheck** is an interactive clinical decision-support web application and machine learning platform designed to predict and stratify cardiovascular disease (CVD) risk using patient hemodynamic profiles, biological metrics, and lifestyle parameters. Trained on a cohort of **70,000 anonymized patient records**, the platform features a calibrated Scikit-Learn machine learning pipeline integrated into a custom Streamlit UI styled with modern clinical glassmorphism aesthetics.
 
 ---
 

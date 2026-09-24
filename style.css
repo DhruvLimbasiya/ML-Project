@@ -1,5 +1,6 @@
 /* ================================================================
-   CardioSense AI  |  Ultra-Modern Cyber-Clinical Design System
+   CardioCheck: Cardiovascular Disease Risk Prediction Using Machine Learning
+   Design System & Styling
    Palette:
      Canvas:      #080E14 (Deep Cosmic Obsidian)
      Navy/Base:   #0E1722 (Rich Midnight Navy)
@@ -708,9 +709,9 @@ button[kind="header"] *,
 }
 
 /* ════════════════════════════════════════════════════════════════
-   STREAMLIT FORM CONTROLS & INPUTS
+   STREAMLIT FORM CONTROLS & INPUTS (BORDERLESS)
    ════════════════════════════════════════════════════════════════ */
-.stSelectbox label, .stNumberInput label, .stSlider label,
+.stSelectbox label, .stNumberInput label, .stSlider label, .stTextInput label,
 [data-testid="stWidgetLabel"] p {
   font-size: 13px !important;
   font-weight: 600 !important;
@@ -718,30 +719,54 @@ button[kind="header"] *,
   margin-bottom: 6px !important;
 }
 
+/* Entire Input & Selectbox Elements — 100% Borderless */
 div[data-baseweb="input"],
-div[data-baseweb="select"] > div {
+div[data-baseweb="base-input"],
+div[data-baseweb="select"],
+div[data-baseweb="select"] > div,
+[data-testid="stNumberInputContainer"],
+[data-testid="stNumberInput"] div,
+[data-testid="stTextInput"] div,
+.stSelectbox [data-baseweb="select"] > div {
   background: rgba(14, 25, 38, 0.9) !important;
-  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
   border-radius: var(--r-md) !important;
   color: #FFFFFF !important;
   backdrop-filter: blur(10px) !important;
   transition: var(--transition-fast) !important;
+  box-shadow: none !important;
 }
 
 div[data-baseweb="input"]:hover,
-div[data-baseweb="select"] > div:hover {
-  border-color: var(--cyan) !important;
+div[data-baseweb="base-input"]:hover,
+div[data-baseweb="select"] > div:hover,
+[data-testid="stNumberInputContainer"]:hover,
+.stSelectbox [data-baseweb="select"] > div:hover {
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
   background: rgba(18, 32, 48, 0.95) !important;
   box-shadow: 0 0 16px rgba(56, 189, 248, 0.15) !important;
 }
 
 div[data-baseweb="input"]:focus-within,
-div[data-baseweb="select"] > div:focus-within {
-  border-color: var(--cyan) !important;
-  box-shadow: 0 0 0 3px var(--cyan-glow), 0 0 20px rgba(56, 189, 248, 0.25) !important;
+div[data-baseweb="base-input"]:focus-within,
+div[data-baseweb="select"] > div:focus-within,
+[data-testid="stNumberInputContainer"]:focus-within,
+.stSelectbox [data-baseweb="select"] > div:focus-within {
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  background: rgba(20, 36, 54, 0.98) !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35), 0 0 20px rgba(56, 189, 248, 0.2) !important;
 }
 
-input[type="number"], input[type="text"] {
+input[type="number"], input[type="text"], input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   color: #FFFFFF !important;
   font-size: 14.5px !important;
   font-weight: 600 !important;
@@ -750,25 +775,28 @@ input[type="number"], input[type="text"] {
 
 [data-testid="stNumberInput"] button {
   background: rgba(56, 189, 248, 0.08) !important;
-  border: 1px solid var(--line) !important;
+  border: none !important;
+  outline: none !important;
   color: var(--cyan-light) !important;
   border-radius: var(--r-xs) !important;
   transition: var(--transition-fast) !important;
+  box-shadow: none !important;
 }
 
 [data-testid="stNumberInput"] button:hover {
   background: var(--cyan) !important;
   color: #000000 !important;
-  border-color: var(--cyan) !important;
+  border: none !important;
+  outline: none !important;
   transform: scale(1.08) !important;
 }
 
 /* Dropdown popover list */
 div[data-baseweb="popover"], div[role="listbox"] {
   background: #0D1926 !important;
-  border: 1px solid var(--cyan-border) !important;
+  border: none !important;
   border-radius: var(--r-md) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 18px rgba(56, 189, 248, 0.15) !important;
   backdrop-filter: blur(20px) !important;
 }
 

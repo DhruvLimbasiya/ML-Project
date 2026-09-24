@@ -5,16 +5,79 @@ import joblib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from pathlib import Path
+import streamlit.components.v1 as components
 
 # ─────────────────────────────────────────────
 # STREAMLIT PAGE CONFIGURATION
 # ─────────────────────────────────────────────
 st.set_page_config(
-    page_title="CardioSense AI | Clinical Intelligence Suite",
+    page_title="CardioCheck | Cardiovascular Disease Risk Prediction Using Machine Learning",
     page_icon="🫀",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ─────────────────────────────────────────────
+# PAGE ROUTING DEFINITION
+# ─────────────────────────────────────────────
+PAGE_MAP = {
+    "overview": "🏠  Overview",
+    "risk-assessment": "🔬  Patient Risk Assessment",
+    "analytics": "📊  Model Analytics",
+    "dataset": "📁  Dataset Explorer",
+}
+PAGE_LABELS = list(PAGE_MAP.values())
+SLUG_MAP = {label: slug for slug, label in PAGE_MAP.items()}
+
+def inject_scroll_to_top(page_key: str):
+    """Ensure the viewport scrolls to the top whenever a new page is loaded or switched."""
+    components.html(
+        f"""
+        <script>
+            (function() {{
+                const targetSlug = "{page_key}";
+                const scrollToTop = () => {{
+                    try {{
+                        if (window.parent) {{
+                            window.parent.scrollTo({{ top: 0, left: 0, behavior: 'instant' }});
+                        }}
+                        const doc = window.parent ? window.parent.document : document;
+                        if (doc) {{
+                            if (doc.documentElement) doc.documentElement.scrollTop = 0;
+                            if (doc.body) doc.body.scrollTop = 0;
+                            
+                            const scrollSelectors = [
+                                'section.main',
+                                '[data-testid="stAppViewContainer"]',
+                                '[data-testid="stMain"]',
+                                '[data-testid="stMainBlockContainer"]',
+                                '.stMainBlockContainer',
+                                '.main',
+                                '.block-container'
+                            ];
+                            
+                            scrollSelectors.forEach(sel => {{
+                                const elements = doc.querySelectorAll(sel);
+                                elements.forEach(el => {{
+                                    if (el) el.scrollTop = 0;
+                                }});
+                            }});
+                        }}
+                    }} catch (e) {{
+                        window.scrollTo(0, 0);
+                    }}
+                }};
+                scrollToTop();
+                requestAnimationFrame(scrollToTop);
+                setTimeout(scrollToTop, 25);
+                setTimeout(scrollToTop, 100);
+                setTimeout(scrollToTop, 250);
+            }})();
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
 
 # ─────────────────────────────────────────────
 # LOAD EXTERNAL CSS DESIGN SYSTEM
@@ -38,7 +101,7 @@ def load_model():
     return None
 
 @st.cache_data
-def load_dataset():
+def load_dataset(): 
     data_path = Path(__file__).parent / "cardio_train.csv"
     if data_path.exists():
         df = pd.read_csv(data_path, sep=";")
@@ -129,6 +192,24 @@ def apply_chart_theme(fig, ax):
     ax.grid(axis='y', linestyle='--', alpha=0.15, color='#38BDF8')
 
 # ─────────────────────────────────────────────
+# URL ROUTING & NAVIGATION SYNCHRONIZATION
+# ─────────────────────────────────────────────
+# Synchronize page routing from query parameters
+url_page = st.query_params.get("page", "overview")
+if url_page not in PAGE_MAP:
+    url_page = "overview"
+
+# If session state exists and differs from URL param (e.g. browser navigation), sync session state
+if "nav_selection" in st.session_state:
+    if SLUG_MAP.get(st.session_state.nav_selection) != url_page:
+        st.session_state.nav_selection = PAGE_MAP[url_page]
+
+def on_nav_change():
+    selected_label = st.session_state.nav_selection
+    slug = SLUG_MAP.get(selected_label, "overview")
+    st.query_params["page"] = slug
+
+# ─────────────────────────────────────────────
 # SIDEBAR NAVIGATION & SYSTEM STATUS
 # ─────────────────────────────────────────────
 with st.sidebar:
@@ -140,21 +221,31 @@ with st.sidebar:
             </div>
             <div>
                 <div style="font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.02em;">
-                    Cardio<span style="color: #38BDF8;">Sense</span> AI
+                    Cardio<span style="color: #38BDF8;">Check</span>
                 </div>
-                <div style="font-size: 11.5px; color: #38BDF8; font-weight: 600; letter-spacing: 0.02em;">
-                    Clinical Intelligence Suite
+                <div style="font-size: 11px; color: #38BDF8; font-weight: 600; letter-spacing: 0.02em;">
+                    CVD Risk Prediction Engine
                 </div>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
+    default_index = PAGE_LABELS.index(PAGE_MAP[url_page])
+
     page = st.radio(
         "Navigation",
-        ["🏠  Overview", "🔬  Patient Risk Assessment", "📊  Model Analytics", "📁  Dataset Explorer"],
+        PAGE_LABELS,
+        index=default_index,
+        key="nav_selection",
+        on_change=on_nav_change,
         label_visibility="collapsed"
     )
+
+    # Keep URL query parameter synchronized
+    active_slug = SLUG_MAP.get(page, "overview")
+    if st.query_params.get("page") != active_slug:
+        st.query_params["page"] = active_slug
 
     st.markdown("<hr style='border-color: rgba(56, 189, 248, 0.12); margin: 20px 0;'>", unsafe_allow_html=True)
     
@@ -195,31 +286,42 @@ with st.sidebar:
 
 
 # ─────────────────────────────────────────────
+# VIEWPORT CONTROLLER — SCROLL TO TOP ON PAGE SWITCH
+# ─────────────────────────────────────────────
+current_active_slug = SLUG_MAP.get(page, "overview")
+if st.session_state.get("_last_rendered_page") != current_active_slug:
+    inject_scroll_to_top(current_active_slug)
+    st.session_state["_last_rendered_page"] = current_active_slug
+
+
+# ─────────────────────────────────────────────
+# GLOBAL TOP NAVIGATION & STATUS BAR
+# ─────────────────────────────────────────────
+st.markdown("""
+<div class="top-nav">
+    <div class="brand-badge">
+        <div class="brand-icon-wrapper">🫀</div>
+        <div>
+            <div class="brand-title">Cardio<span>Check</span></div>
+            <div class="brand-subtitle">Cardiovascular Disease Risk Prediction Using Machine Learning</div>
+        </div>
+    </div>
+    <div class="nav-badges">
+        <div class="latency-pill">
+            <span>⚡</span> Inference: 8ms
+        </div>
+        <div class="status-pill">
+            <span class="status-dot"></span>
+            Engine Operational
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────
 # PAGE 1 — OVERVIEW
 # ─────────────────────────────────────────────
 if page == "🏠  Overview":
-    
-    # Dynamic Top Navigation Bar
-    st.markdown("""
-    <div class="top-nav">
-        <div class="brand-badge">
-            <div class="brand-icon-wrapper">🫀</div>
-            <div>
-                <div class="brand-title">Cardio<span>Sense</span> AI</div>
-                <div class="brand-subtitle">Cardiovascular Risk Stratification &amp; Machine Learning Engine</div>
-            </div>
-        </div>
-        <div class="nav-badges">
-            <div class="latency-pill">
-                <span>⚡</span> Inference: 8ms
-            </div>
-            <div class="status-pill">
-                <span class="status-dot"></span>
-                Engine Operational
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
 
     # Hero Banner with Glow & Interactive Cards
     st.markdown("""
@@ -363,57 +465,6 @@ elif page == "🔬  Patient Risk Assessment":
     </div>
     """, unsafe_allow_html=True)
 
-    # Session State Initialization
-    if "preset_data" not in st.session_state:
-        st.session_state.preset_data = {
-            "age": 45, "gender": "Female", "height": 165, "weight": 68.0,
-            "ap_hi": 120, "ap_lo": 80, "cholesterol": "Normal", "gluc": "Normal",
-            "smoke": "No", "alco": "No", "active": "Yes"
-        }
-
-    # Patient Preset Fast-Load Buttons
-    st.markdown("<div style='font-size: 11.5px; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 12px;'>⚡ Quick Load Clinical Presets</div>", unsafe_allow_html=True)
-    
-    p1, p2, p3, p4 = st.columns(4)
-    
-    with p1:
-        if st.button("🚨 Preset: High Risk Male", use_container_width=True):
-            st.session_state.preset_data = {
-                "age": 58, "gender": "Male", "height": 172, "weight": 94.0,
-                "ap_hi": 158, "ap_lo": 98, "cholesterol": "Well Above Normal", "gluc": "Above Normal",
-                "smoke": "Yes", "alco": "No", "active": "No"
-            }
-            st.rerun()
-
-    with p2:
-        if st.button("🛡️ Preset: Low Risk Female", use_container_width=True):
-            st.session_state.preset_data = {
-                "age": 32, "gender": "Female", "height": 165, "weight": 58.0,
-                "ap_hi": 112, "ap_lo": 74, "cholesterol": "Normal", "gluc": "Normal",
-                "smoke": "No", "alco": "No", "active": "Yes"
-            }
-            st.rerun()
-
-    with p3:
-        if st.button("⚠️ Preset: Borderline Profile", use_container_width=True):
-            st.session_state.preset_data = {
-                "age": 50, "gender": "Female", "height": 160, "weight": 78.0,
-                "ap_hi": 136, "ap_lo": 88, "cholesterol": "Above Normal", "gluc": "Normal",
-                "smoke": "No", "alco": "No", "active": "Yes"
-            }
-            st.rerun()
-
-    with p4:
-        if st.button("🏃 Preset: Active Senior", use_container_width=True):
-            st.session_state.preset_data = {
-                "age": 62, "gender": "Male", "height": 175, "weight": 72.0,
-                "ap_hi": 124, "ap_lo": 78, "cholesterol": "Normal", "gluc": "Normal",
-                "smoke": "No", "alco": "No", "active": "Yes"
-            }
-            st.rerun()
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
     # ── Grouped Clinical Form ─────────────────────────────
     st.markdown("""
     <div class="clinical-card">
@@ -423,15 +474,14 @@ elif page == "🔬  Patient Risk Assessment":
     """, unsafe_allow_html=True)
 
     f_col1, f_col2, f_col3 = st.columns(3)
-    defaults = st.session_state.preset_data
 
     with f_col1:
         st.markdown("<div style='font-size: 13.5px; font-weight: 700; color: #38BDF8; margin-bottom: 12px;'>01. Demographics &amp; Biometrics</div>", unsafe_allow_html=True)
-        age = st.number_input("Age (Years)", min_value=18, max_value=100, value=int(defaults["age"]), step=1)
-        gender = st.selectbox("Biological Sex", ["Female", "Male"], index=0 if defaults["gender"]=="Female" else 1)
+        age = st.number_input("Age (Years)", min_value=18, max_value=100, value=45, step=1)
+        gender = st.selectbox("Biological Sex", ["Female", "Male"], index=0)
         gender_val = 1 if gender == "Female" else 2
-        height = st.number_input("Height (cm)", min_value=120, max_value=220, value=int(defaults["height"]), step=1)
-        weight = st.number_input("Weight (kg)", min_value=35.0, max_value=200.0, value=float(defaults["weight"]), step=0.5)
+        height = st.number_input("Height (cm)", min_value=120, max_value=220, value=165, step=1)
+        weight = st.number_input("Weight (kg)", min_value=35.0, max_value=200.0, value=68.0, step=0.5)
         
         # Real-time BMI Calculation & Interactive HUD Card
         bmi = weight / ((height / 100) ** 2)
@@ -454,8 +504,8 @@ elif page == "🔬  Patient Risk Assessment":
 
     with f_col2:
         st.markdown("<div style='font-size: 13.5px; font-weight: 700; color: #38BDF8; margin-bottom: 12px;'>02. Hemodynamics &amp; Vitals</div>", unsafe_allow_html=True)
-        ap_hi = st.number_input("Systolic BP (mmHg)", min_value=80, max_value=240, value=int(defaults["ap_hi"]), step=1, help="Upper systolic reading (e.g. 120 in 120/80)")
-        ap_lo = st.number_input("Diastolic BP (mmHg)", min_value=40, max_value=160, value=int(defaults["ap_lo"]), step=1, help="Lower diastolic reading (e.g. 80 in 120/80)")
+        ap_hi = st.number_input("Systolic BP (mmHg)", min_value=80, max_value=240, value=120, step=1, help="Upper systolic reading (e.g. 120 in 120/80)")
+        ap_lo = st.number_input("Diastolic BP (mmHg)", min_value=40, max_value=160, value=80, step=1, help="Lower diastolic reading (e.g. 80 in 120/80)")
         
         # Mean Arterial Pressure (MAP) & Classification
         map_val = (2 * ap_lo + ap_hi) / 3.0
@@ -482,24 +532,22 @@ elif page == "🔬  Patient Risk Assessment":
         st.markdown("<div style='font-size: 13.5px; font-weight: 700; color: #38BDF8; margin-bottom: 12px;'>03. Metabolic &amp; Lifestyle Markers</div>", unsafe_allow_html=True)
         
         chol_opts = ["Normal", "Above Normal", "Well Above Normal"]
-        chol_idx = chol_opts.index(defaults["cholesterol"]) if defaults["cholesterol"] in chol_opts else 0
-        cholesterol = st.selectbox("Serum Cholesterol Level", chol_opts, index=chol_idx)
+        cholesterol = st.selectbox("Serum Cholesterol Level", chol_opts, index=0)
         chol_val = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[cholesterol]
 
         gluc_opts = ["Normal", "Above Normal", "Well Above Normal"]
-        gluc_idx = gluc_opts.index(defaults["gluc"]) if defaults["gluc"] in gluc_opts else 0
-        gluc = st.selectbox("Fasting Glucose Level", gluc_opts, index=gluc_idx)
+        gluc = st.selectbox("Fasting Glucose Level", gluc_opts, index=0)
         gluc_val = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[gluc]
 
         sub_c1, sub_c2 = st.columns(2)
         with sub_c1:
-            smoke = st.selectbox("Tobacco Smoker?", ["No", "Yes"], index=0 if defaults["smoke"]=="No" else 1)
+            smoke = st.selectbox("Tobacco Smoker?", ["No", "Yes"], index=0)
             smoke_val = 1 if smoke == "Yes" else 0
-            alco = st.selectbox("Alcohol Intake?", ["No", "Yes"], index=0 if defaults["alco"]=="No" else 1)
+            alco = st.selectbox("Alcohol Intake?", ["No", "Yes"], index=0)
             alco_val = 1 if alco == "Yes" else 0
 
         with sub_c2:
-            active = st.selectbox("Physical Activity?", ["Yes", "No"], index=0 if defaults["active"]=="Yes" else 1)
+            active = st.selectbox("Physical Activity?", ["Yes", "No"], index=0)
             active_val = 1 if active == "Yes" else 0
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -669,8 +717,8 @@ elif page == "🔬  Patient Risk Assessment":
                     st.markdown(
                         f'<div style="background: rgba(14,25,38,0.95); border: 1px solid rgba(56,189,248,0.3); border-radius: 16px; padding: 24px; font-family: Plus Jakarta Sans, sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">'
                         f'<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(56,189,248,0.2); padding-bottom: 14px; flex-wrap: wrap; gap: 10px;">'
-                        f'<div><div style="font-family: Outfit, sans-serif; font-weight: 800; font-size: 19px; color: #FFFFFF;">CARDIOSENSE AI — CLINICAL REPORT</div>'
-                        f'<div style="font-size: 12px; color: var(--sky-muted); margin-top: 2px;">Automated Machine Learning Decision Support &amp; Stratification</div></div>'
+                        f'<div><div style="font-family: Outfit, sans-serif; font-weight: 800; font-size: 19px; color: #FFFFFF;">CARDIOCHECK — CLINICAL REPORT</div>'
+                        f'<div style="font-size: 12px; color: var(--sky-muted); margin-top: 2px;">Cardiovascular Disease Risk Prediction Using Machine Learning</div></div>'
                         f'<div style="text-align: right;"><div style="font-size: 13px; color: {report_color}; font-weight: 800;">STRATIFICATION: {report_status}</div>'
                         f'<div style="font-size: 11px; color: var(--sky-muted); font-family: DM Mono, monospace;">Pipeline: v2.4-LR</div></div>'
                         f'</div>'
